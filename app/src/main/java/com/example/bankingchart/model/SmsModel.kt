@@ -1,4 +1,4 @@
-package com.example.bankingchart
+package com.example.bankingchart.model
 
 data class SmsModel(
     val type: String?,

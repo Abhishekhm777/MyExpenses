@@ -1,4 +1,4 @@
-package com.example.androiddata.ui.main
+package com.example.bankingchart.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,16 +8,16 @@ import android.widget.Filterable
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bankingchart.R
-import com.example.bankingchart.SmsModel
+import com.example.bankingchart.model.SmsModel
 
 
 class RecyclerAdapter(
-                      val contents:List<SmsModel>
-                     ):
-    RecyclerView.Adapter<RecyclerAdapter.ViewHolder>(),Filterable {
+    val contents: List<SmsModel>
+) :
+    RecyclerView.Adapter<RecyclerAdapter.ViewHolder>(), Filterable {
 
     var searchableList: ArrayList<SmsModel> = contents as ArrayList<SmsModel>
-    private var onNothingFound: (() -> Unit)? = null
+
     override fun getItemCount() = searchableList.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -39,11 +39,10 @@ class RecyclerAdapter(
 
     inner class ViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
-        val title = itemView.findViewById<TextView>(R.id.title)
-        val subtitle = itemView.findViewById<TextView>(R.id.subtitle)
+        val title: TextView = itemView.findViewById<TextView>(R.id.title)
+        val subtitle: TextView = itemView.findViewById<TextView>(R.id.subtitle)
 
     }
-
 
 
     override fun getFilter(): Filter {
@@ -51,28 +50,29 @@ class RecyclerAdapter(
             private val filterResults = FilterResults()
             override fun performFiltering(constraint: CharSequence?): FilterResults {
 
-                if (constraint.isNullOrBlank()) {
-                  searchableList = contents as ArrayList<SmsModel>
+                searchableList = if (constraint.isNullOrBlank()) {
+                    contents as ArrayList<SmsModel>
                 } else {
-                    val filtered =ArrayList<SmsModel>()
+                    val filtered = ArrayList<SmsModel>()
                     val filterPattern = constraint.toString().toLowerCase().trim { it <= ' ' }
                     for (item in contents) {
-                        if(item.type?.contains(filterPattern,true)!!){
+                        if (item.type?.contains(filterPattern, true)!!) {
                             filtered.add(item)
                         }
                     }
-                   searchableList  = filtered
+                    filtered
                 }
                 return filterResults.also {
                     it.values = searchableList
                 }
             }
+
             @Suppress("UNCHECKED_CAST")
             override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-               if(results?.values!=null) {
-                   searchableList = results?.values as ArrayList<SmsModel>
-                   notifyDataSetChanged()
-               }
+                if (results?.values != null) {
+                    searchableList = results.values as ArrayList<SmsModel>
+                    notifyDataSetChanged()
+                }
 
 
             }

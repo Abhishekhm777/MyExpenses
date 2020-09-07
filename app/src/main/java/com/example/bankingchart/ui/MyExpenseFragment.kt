@@ -1,10 +1,8 @@
-package com.example.bankingchart
+package com.example.bankingchart.ui
 
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextUtils
 import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -14,12 +12,14 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.androiddata.ui.main.RecyclerAdapter
+import com.example.bankingchart.adapter.RecyclerAdapter
+import com.example.bankingchart.data.SharedViewModel
+import com.example.bankingchart.R
 import com.example.bankingchart.databinding.FragmentMyExpenseBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.android.synthetic.main.sms_layout.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MyExpenseFragment : Fragment() {
@@ -27,7 +27,7 @@ class MyExpenseFragment : Fragment() {
     lateinit var binding: FragmentMyExpenseBinding
     private lateinit var adapter: RecyclerAdapter
     private val PERMISSION_REQUEST_CODE = 1
-    private val viewModel by viewModel<MainViewModel>()
+    private val viewModel by viewModel<SharedViewModel>()
     private var checkedItem = 0
     private lateinit var navcontroler: NavController
 
@@ -47,7 +47,10 @@ class MyExpenseFragment : Fragment() {
         }
         binding.swipe.also {
             it.setOnRefreshListener {
-                getAllSms()
+                CoroutineScope(Dispatchers.IO).launch {
+                    viewModel.refresh()
+                }
+
             }
         }
 
@@ -62,7 +65,7 @@ class MyExpenseFragment : Fragment() {
         viewModel.allsms.observe(this, Observer {
             binding.swipe.isRefreshing = false
             adapter = RecyclerAdapter(it)
-            Log.e(TAG, "getAllSms: "+it.size )
+            Log.e(TAG, "getAllSms: " + it.size)
             binding.apply {
                 this.recyclerView.adapter = adapter
             }
@@ -71,13 +74,12 @@ class MyExpenseFragment : Fragment() {
     }
 
     private fun requestPermission() {
-        activity?.let {
-            ActivityCompat.requestPermissions(
-                it,
-                arrayOf(Manifest.permission.READ_SMS),
-                PERMISSION_REQUEST_CODE
-            )
-        }
+
+        requestPermissions(
+            arrayOf(Manifest.permission.READ_SMS),
+            PERMISSION_REQUEST_CODE
+        )
+
     }
 
     private fun checkPergmission(): Boolean {
