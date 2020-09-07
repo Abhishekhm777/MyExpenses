@@ -30,10 +30,7 @@ class MyExpenseFragment : Fragment() {
     private val viewModel by viewModel<MainViewModel>()
     private var checkedItem = 0
     private lateinit var navcontroler: NavController
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -69,6 +66,7 @@ class MyExpenseFragment : Fragment() {
             binding.apply {
                 this.recyclerView.adapter = adapter
             }
+            setHasOptionsMenu(true)
         })
     }
 

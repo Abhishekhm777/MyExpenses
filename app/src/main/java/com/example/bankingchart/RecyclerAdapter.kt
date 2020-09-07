@@ -30,7 +30,7 @@ class RecyclerAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val content = searchableList[position]
         with(holder) {
-            title.text = content.type +content.amount
+            title.text = content.type
             subtitle.text = content.body
         }
 
