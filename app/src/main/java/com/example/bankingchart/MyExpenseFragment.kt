@@ -42,7 +42,7 @@ class MyExpenseFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentMyExpenseBinding.inflate(inflater, container, false)
         binding.swipe.isRefreshing = true
-        requestPermission()
+
         if (checkPergmission()) {
             getAllSms()
         } else {

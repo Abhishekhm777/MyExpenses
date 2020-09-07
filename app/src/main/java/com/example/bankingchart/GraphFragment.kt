@@ -1,10 +1,16 @@
 package com.example.bankingchart
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
@@ -24,6 +30,7 @@ class GraphFragment : Fragment() {
     lateinit var pieEntries: ArrayList<PieEntry>
    private val viewModel by viewModel<MainViewModel>()
     private lateinit var navcontroler: NavController
+    private val PERMISSION_REQUEST_CODE = 1
     private  val TAG = "GraphFragment"
 
     override fun onCreateView(
@@ -33,12 +40,16 @@ class GraphFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentGraphBinding.inflate(inflater, container, false)
         activity?.title = R.string.home_title.toString()
-
-        GlobalScope.launch(Dispatchers.Main){ // creates worker thread
-
-                getEntries()
-
+        if (checkPergmission()) {
+            getEntries()
+        } else {
+            requestPermission()
         }
+
+
+
+
+
 
 
 
@@ -56,7 +67,7 @@ class GraphFragment : Fragment() {
         return binding.root
     }
 
-    private suspend fun getEntries() {
+    private  fun getEntries() {
         viewModel.allsms.observe(this, Observer {
           val incomeList = mutableListOf<Double>()
             val expenseList = mutableListOf<Double>()
@@ -83,6 +94,8 @@ class GraphFragment : Fragment() {
 
 
     }
+
+
 
 
     fun setUpChart(income: Float, expense: Float, total: Float) {
@@ -113,6 +126,47 @@ class GraphFragment : Fragment() {
         pieDataSet.sliceSpace = 5f
         binding.pieChart.invalidate()
 
+    }
+
+    private fun requestPermission() {
+        activity?.let {
+         requestPermissions(
+                arrayOf(Manifest.permission.READ_SMS),
+                PERMISSION_REQUEST_CODE
+            )
+
+        }
+    }
+
+    private fun checkPergmission(): Boolean {
+        val result = activity?.let {
+            ContextCompat.checkSelfPermission(
+                it,
+                Manifest.permission.READ_SMS
+            )
+        }
+        return result == PackageManager.PERMISSION_GRANTED
+    }
+
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+
+        Log.e(TAG, "onRequestPermissionsResult: "+grantResults[0] )
+        when (requestCode) {
+
+            PERMISSION_REQUEST_CODE -> if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.e(TAG, "onRequestPermissionsResult: "+grantResults )
+                getEntries()
+            } else {
+                Toast.makeText(activity, "Permission Denied", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 }
 
