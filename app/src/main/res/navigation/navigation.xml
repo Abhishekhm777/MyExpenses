@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navgraph"
+    app:startDestination="@id/graphFragment">
+
+    <fragment
+        android:id="@+id/myExpenseFragment"
+        android:name="com.example.bankingchart.MyExpenseFragment"
+        tools:layout="@layout/fragment_my_expense" />
+    <fragment
+        android:id="@+id/graphFragment"
+        android:label="@string/app_name"
+        android:name="com.example.bankingchart.GraphFragment"
+        tools:layout="@layout/fragment_graph" >
+        <action
+            android:id="@+id/myExpenseFragment2"
+            app:destination="@id/myExpenseFragment"
+            app:popUpTo="@id/graphFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+</navigation>
