@@ -37,7 +37,7 @@ class Repository(private val app: Application) {
         val regexForAccount: Pattern = Pattern.compile("[0-9]*[Xx\\*]*[0-9]*[Xx\\*]+[0-9]{3,}")
 
         val regexForAmount =
-            Pattern.compile("[rR][sS]\\.?\\s[,\\d]+\\.?\\d{0,2}|[iI][nN][rR]\\.?\\s*[,\\d]+\\.?\\d{0,2}")
+            Pattern.compile("[rR][sS][^\"]*[,\\d]+\\.?\\d{0,2}|[iI][nN][rR]\\.?\\s*[,\\d]+\\.?\\d{0,2}")
         val price = Pattern.compile("[0-9]{1,13}(\\.[0-9]*)?")
         val totalSMS: Int = c?.count ?: 0
         if (c?.moveToFirst() == true) {
@@ -50,6 +50,7 @@ class Repository(private val app: Application) {
                     val amm: Matcher = regexForAmount.matcher(body)
                     if (amm.find()) {
                         val amount = amm.group(0)
+                        Log.e(TAG, "getAllSms: "+amount )
                         if (body?.contains("deposited", true)!!
                             || body?.contains("credited", true)
                         ) {

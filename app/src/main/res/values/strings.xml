@@ -6,5 +6,6 @@
     <string name="home_title">Transactions</string>
     <string name="ok">OK</string>
     <string name="filter_by">Filter By</string>
+    <string name="no_transactions_found">No transactions found!</string>
 
 </resources>

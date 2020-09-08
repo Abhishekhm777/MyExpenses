@@ -20,6 +20,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.bind
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MyExpenseFragment : Fragment() {
@@ -63,9 +64,11 @@ class MyExpenseFragment : Fragment() {
 
     private fun getAllSms() {
         viewModel.allsms.observe(this, Observer {
+            if(it.isEmpty()){
+                binding.textView.visibility=View.VISIBLE
+            }else binding.textView.visibility=View.GONE
             binding.swipe.isRefreshing = false
             adapter = RecyclerAdapter(it)
-            Log.e(TAG, "getAllSms: " + it.size)
             binding.apply {
                 this.recyclerView.adapter = adapter
             }
@@ -103,6 +106,7 @@ class MyExpenseFragment : Fragment() {
             PERMISSION_REQUEST_CODE -> if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getAllSms()
             } else {
+                binding.swipe.isRefreshing=false
                 Toast.makeText(activity, "Permission Denied", Toast.LENGTH_SHORT)
                     .show()
             }
