@@ -40,9 +40,9 @@ class GraphFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentGraphBinding.inflate(inflater, container, false)
-        binding.swipe?.isRefreshing=true
+        binding.swipe?.isRefreshing = true
         binding.swipe?.setOnRefreshListener {
-            binding.swipe?.isRefreshing=false
+            binding.swipe?.isRefreshing = false
         }
         activity?.title = R.string.home_title.toString()
         if (checkPermission()) {
@@ -69,9 +69,9 @@ class GraphFragment : Fragment() {
             val totalList = mutableListOf<Double>()
             it.map { model ->
                 model.amount?.let { it1 -> totalList.add(it1) }
-                when(model.type){
-                    "Income" ->  model.amount?.let { it1 -> incomeList.add(it1) }
-                    else ->    model.amount?.let { it1 -> expenseList.add(it1) }
+                when (model.type) {
+                    "Income" -> model.amount?.let { it1 -> incomeList.add(it1) }
+                    else -> model.amount?.let { it1 -> expenseList.add(it1) }
                 }
             }
 
@@ -88,7 +88,7 @@ class GraphFragment : Fragment() {
 
 
     private fun setUpChart(income: Float, expense: Float, total: Float) {
-        binding.swipe?.isRefreshing=false
+        binding.swipe?.isRefreshing = false
         val pieEntries = ArrayList<PieEntry>()
         pieEntries.add(PieEntry(total, "Total transactions"))
         pieEntries.add(PieEntry(income, "Income"))
@@ -158,6 +158,7 @@ class GraphFragment : Fragment() {
 
                 getData()
             } else {
+                binding.swipe?.isRefreshing = true
                 Toast.makeText(activity, "Permission Denied", Toast.LENGTH_SHORT)
                     .show()
             }
