@@ -1,4 +1,4 @@
-# BankingChart
+# MyExpenses
 This is a Android app that analyses all the SMS of the user ,then finds all the banking transactional SMS's and calculate the Income and expenses based on it and display in the Pie-chart .
 
 # Nothing special instructions is needed to run this app
